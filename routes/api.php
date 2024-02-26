@@ -25,5 +25,4 @@ use Illuminate\Support\Facades\Route;
     Route::post('notes',[NotesController::class,'store']);
     Route::get('notes',[NotesController::class,'index']);
     Route::put('notes/{id}',[NotesController::class,'update']);
-    Route::delete('notes/{id}',[NotesController::class,'destroy']);
  });
