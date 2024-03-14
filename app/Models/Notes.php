@@ -11,6 +11,7 @@ class Notes extends Model
     protected $fillable = [
         'title',
         'content',
-        'writer'
+        'writer',
+        'users_id'
     ];
 }

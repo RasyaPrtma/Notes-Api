@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Notes;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class NotesController extends Controller
@@ -13,11 +14,18 @@ class NotesController extends Controller
      */
     public function index()
     {
-        $note = Notes::all('id','title','content','writer');
-        if(count($note)){
+        $id = Auth::user()->id;
+        $note = Notes::where('users_id',$id)->first();
+        if($note !== null){
             return response()->json([
                 'message' => 'fetch notes sukses',
-                'data' => $note
+                'data' => [
+                    'id' => $note->id,
+                    'title' => $note->title,
+                    'content' => $note->content,
+                    'writer' => $note->writer,
+                    'users_id' => $note->users_id
+                ]
             ],200);
         }else{
             return response()->json([
@@ -51,10 +59,12 @@ class NotesController extends Controller
         if($validate->fails()){
             return response()->json(['message' => 'Invalid field','errors' => $validate->errors()],400);
         }else{
+          $id = Auth::user()->id;
           $note =   Notes::create([
                 'title' => $request->title,
                 'content' => $request->content,
                 'writer' => $request->writer,
+                'users_id' => $id
             ]);
             return response()->json([
                 'message' => 'notes berhasil ditambahkan',
@@ -93,7 +103,8 @@ class NotesController extends Controller
             $notes->update([
                 'title' => $request->title,
                 'content' => $request->content,
-                'writer' => $request->writer
+                'writer' => $request->writer,
+                'users_id' => Auth::user()->id
             ]);
             return response()->json([
                 'message' => 'notes berhasil diupdate',
