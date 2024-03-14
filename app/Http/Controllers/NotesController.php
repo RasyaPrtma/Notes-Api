@@ -15,17 +15,18 @@ class NotesController extends Controller
     public function index()
     {
         $id = Auth::user()->id;
-        $note = Notes::where('users_id',$id)->first();
-        if($note !== null){
+        $notes = Notes::all('id','title','content','writer','users_id');
+        $data = array(...$notes);
+        $datas = [];
+        if($notes !== null){
+            for($i = 0; $i < count($data);$i++){
+                if($data[$i]->users_id === $id){
+                    array_push($datas,$data[$i]);
+                }
+            }
             return response()->json([
                 'message' => 'fetch notes sukses',
-                'data' => [
-                    'id' => $note->id,
-                    'title' => $note->title,
-                    'content' => $note->content,
-                    'writer' => $note->writer,
-                    'users_id' => $note->users_id
-                ]
+                'data' => $datas
             ],200);
         }else{
             return response()->json([
