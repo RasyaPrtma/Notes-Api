@@ -16,17 +16,11 @@ class NotesController extends Controller
     {
         $id = Auth::user()->id;
         $notes = Notes::all('id','title','content','writer','users_id');
-        $data = array(...$notes);
-        $datas = [];
+        $notes = Notes::where('users_id',$id)->get();
         if($notes !== null){
-            for($i = 0; $i < count($data);$i++){
-                if($data[$i]->users_id === $id){
-                    array_push($datas,$data[$i]);
-                }
-            }
             return response()->json([
                 'message' => 'fetch notes sukses',
-                'data' => $datas
+                'data' => $notes
             ],200);
         }else{
             return response()->json([
